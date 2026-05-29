@@ -1,0 +1,27 @@
+{
+  "name": "sparky-notes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deep, browse-first reading guides for the top 25 high-school books — literary analysis plus modern-day (2026) connections.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "serve": "npx serve out"
+  },
+  "dependencies": {
+    "next": "^15.5.18",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.16",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "autoprefixer": "10.4.20",
+    "postcss": "^8.5.10",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.7.3"
+  }
+}
