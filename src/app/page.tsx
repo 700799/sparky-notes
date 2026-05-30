@@ -51,7 +51,7 @@ export default function HomePage() {
       <BrowseSection books={books} />
 
       {/* Key Highlights — card-like posts at the bottom */}
-      <section className="mx-auto mt-16 max-w-6xl px-4">
+      <section id="highlights" className="mx-auto mt-16 max-w-6xl scroll-mt-20 px-4">
         <div className="flex items-end justify-between">
           <div>
             <h2 className="font-serif text-3xl font-black text-ink">Key highlights</h2>

@@ -2,8 +2,6 @@
 
 import Pill from './Pill';
 import {
-  allEras,
-  allGenres,
   allThemes,
   countActive,
   type ActiveFilters,
@@ -16,36 +14,32 @@ interface FilterPillsProps {
   onClear: () => void;
 }
 
-const GROUPS: { key: FilterGroup; label: string; values: string[] }[] = [
-  { key: 'genre', label: 'Genre', values: allGenres() },
-  { key: 'theme', label: 'Theme', values: allThemes() },
-  { key: 'era', label: 'Era', values: allEras() },
-];
+// Browsing is filtered by theme only — genre and era pills were removed to
+// keep the bar focused and uncluttered.
+const THEMES = allThemes();
 
-/** The pill-box filter bar. Multi-select within and across groups. */
+/** The theme pill-box filter bar. Multi-select. */
 export default function FilterPills({ active, onToggle, onClear }: FilterPillsProps) {
   const activeCount = countActive(active);
 
   return (
     <div className="space-y-4">
-      {GROUPS.map((group) => (
-        <div key={group.key} className="flex flex-col gap-2 sm:flex-row sm:items-start">
-          <span className="w-16 shrink-0 pt-1.5 text-xs font-semibold uppercase tracking-wide text-ink/50">
-            {group.label}
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {group.values.map((value) => (
-              <Pill
-                key={value}
-                active={active[group.key].includes(value)}
-                onClick={() => onToggle(group.key, value)}
-              >
-                {value}
-              </Pill>
-            ))}
-          </div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+        <span className="w-16 shrink-0 pt-1.5 text-xs font-semibold uppercase tracking-wide text-ink/50">
+          Theme
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {THEMES.map((value) => (
+            <Pill
+              key={value}
+              active={active.theme.includes(value)}
+              onClick={() => onToggle('theme', value)}
+            >
+              {value}
+            </Pill>
+          ))}
         </div>
-      ))}
+      </div>
 
       {activeCount > 0 && (
         <button

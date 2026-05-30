@@ -3,6 +3,7 @@ import './globals.css';
 import { ProgressProvider } from '@/lib/progress';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import FloatingMenu from '@/components/FloatingMenu';
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <FloatingMenu />
         </ProgressProvider>
       </body>
     </html>
