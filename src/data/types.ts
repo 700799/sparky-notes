@@ -96,6 +96,8 @@ export interface Book {
   quotes: Quote[];
   /** 3–4 takeaways feeding the highlight card grid. */
   highlights: Highlight[];
+  /** Notable awards / honors, e.g. "Pulitzer Prize", "Booker Prize", "#1 NYT Bestseller". */
+  awards?: string[];
   /** Expanded, in-depth guide (optional; rolled out progressively). */
   deepDive?: BookDeepDive;
 }
