@@ -21,6 +21,50 @@ export interface Highlight {
   detail: string;
 }
 
+/** A main character: who they are, what drives them, and how they change. */
+export interface Character {
+  name: string;
+  role: string;
+  motivation: string;
+  arc: string;
+}
+
+/** An important symbol or recurring motif and what it represents. */
+export interface Motif {
+  name: string;
+  meaning: string;
+}
+
+/** A study / discussion prompt or sample essay topic. */
+export interface StudyQuestion {
+  prompt: string;
+  type: 'discussion' | 'essay';
+}
+
+/**
+ * The expanded, in-depth guide. Optional so books can be upgraded to the rich
+ * format progressively without breaking the build. When present, the guide page
+ * renders the full 8-section layout.
+ */
+export interface BookDeepDive {
+  /** Why the book is famous / culturally significant. Multi-paragraph. */
+  whatMakesItFamous: string;
+  /** Chapter/section-by-section plot with major events and turning points. */
+  plotSummary: GuideSection[];
+  /** Main characters, their motivations, and how they change. */
+  characters: Character[];
+  /** Big ideas the author explores, explained in depth. */
+  themeAnalysis: GuideSection[];
+  /** Important symbols and recurring motifs. */
+  motifs: Motif[];
+  /** Writing style, tone, setting, and literary devices. */
+  style: GuideSection[];
+  /** Discussion questions and sample essay topics. */
+  studyQuestions: StudyQuestion[];
+  /** Intriguing facts about the author and why they wrote it. Multi-paragraph. */
+  aboutAuthor: string;
+}
+
 export interface Book {
   /** URL id, e.g. "1984". */
   slug: string;
@@ -52,4 +96,6 @@ export interface Book {
   quotes: Quote[];
   /** 3–4 takeaways feeding the highlight card grid. */
   highlights: Highlight[];
+  /** Expanded, in-depth guide (optional; rolled out progressively). */
+  deepDive?: BookDeepDive;
 }
