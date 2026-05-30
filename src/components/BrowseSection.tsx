@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Book } from '@/data/books';
 import {
+  allThemes,
   emptyFilters,
   filterBooks,
   type ActiveFilters,
@@ -17,6 +18,16 @@ import BookCard from './BookCard';
  */
 export default function BrowseSection({ books }: { books: Book[] }) {
   const [active, setActive] = useState<ActiveFilters>(emptyFilters);
+
+  // Honor a ?theme=<Category> query param (set by the header category menu),
+  // so a category link lands on a pre-filtered grid. Read on the client only.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.getAll('theme').filter((t) => allThemes().includes(t));
+    if (requested.length > 0) {
+      setActive((prev) => ({ ...prev, theme: requested }));
+    }
+  }, []);
 
   const toggle = (group: FilterGroup, value: string) => {
     setActive((prev) => {
