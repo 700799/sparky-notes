@@ -6,6 +6,7 @@ import { classics4 } from './books/classics-4';
 import { modern } from './books/modern';
 import { contemporary } from './books/contemporary';
 import { awardWinners } from './books/award-winners';
+import { awardFiction } from './books/award-fiction';
 import type { BookDeepDive } from './types';
 import { deepDives } from './deepdives';
 import { deepDives2 } from './deepdives-2';
@@ -14,6 +15,7 @@ import { deepDives4 } from './deepdives-4';
 import { deepDives5 } from './deepdives-5';
 import { deepDives6 } from './deepdives-6';
 import { deepDives7 } from './deepdives-7';
+import { deepDives8 } from './deepdives-8';
 
 export type { Book, GuideSection, Quote, Highlight } from './types';
 
@@ -26,6 +28,7 @@ const allDeepDives: Record<string, BookDeepDive> = {
   ...deepDives5,
   ...deepDives6,
   ...deepDives7,
+  ...deepDives8,
 };
 
 // Award backfill for notable existing winners, so award pills and the
@@ -48,6 +51,7 @@ export const books: Book[] = [
   ...modern,
   ...contemporary,
   ...awardWinners,
+  ...awardFiction,
 ]
   .map((b) => {
     const deepDive = allDeepDives[b.slug];
