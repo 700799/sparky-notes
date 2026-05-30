@@ -2,8 +2,8 @@
 
 import Pill from './Pill';
 import {
-  allThemes,
   countActive,
+  facetOptions,
   type ActiveFilters,
   type FilterGroup,
 } from '@/lib/filters';
@@ -14,32 +14,46 @@ interface FilterPillsProps {
   onClear: () => void;
 }
 
-// Browsing is filtered by theme only — genre and era pills were removed to
-// keep the bar focused and uncluttered.
-const THEMES = allThemes();
+// Three facet groups, each precomputed with one-word labels + book counts.
+const GROUPS: { key: 'theme' | 'genre' | 'award'; label: string }[] = [
+  { key: 'theme', label: 'Theme' },
+  { key: 'genre', label: 'Genre' },
+  { key: 'award', label: 'Awards' },
+];
 
-/** The theme pill-box filter bar. Multi-select. */
+const OPTIONS = {
+  theme: facetOptions('theme'),
+  genre: facetOptions('genre'),
+  award: facetOptions('award'),
+};
+
+/** The filter bar: grouped, space-filling grids of one-word pills with counts. */
 export default function FilterPills({ active, onToggle, onClear }: FilterPillsProps) {
   const activeCount = countActive(active);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
-        <span className="w-16 shrink-0 pt-1.5 text-xs font-semibold uppercase tracking-wide text-ink/50">
-          Theme
-        </span>
-        <div className="flex flex-wrap gap-2">
-          {THEMES.map((value) => (
-            <Pill
-              key={value}
-              active={active.theme.includes(value)}
-              onClick={() => onToggle('theme', value)}
-            >
-              {value}
-            </Pill>
-          ))}
+    <div className="space-y-5">
+      {GROUPS.map((group) => (
+        <div key={group.key}>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
+            {group.label}
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+            {OPTIONS[group.key].map((opt) => (
+              <Pill
+                key={opt.value}
+                block
+                count={opt.count}
+                title={opt.value}
+                active={active[group.key].includes(opt.value)}
+                onClick={() => onToggle(group.key, opt.value)}
+              >
+                {opt.short}
+              </Pill>
+            ))}
+          </div>
         </div>
-      </div>
+      ))}
 
       {activeCount > 0 && (
         <button

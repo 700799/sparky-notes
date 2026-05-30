@@ -1,9 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { allThemes } from '@/lib/filters';
+import { facetOptions } from '@/lib/filters';
 
-const CATEGORIES = allThemes();
+const CATEGORIES = facetOptions('theme');
 
 /** Event other components can listen for to apply a theme filter. */
 export const FILTER_THEME_EVENT = 'sparky:filter-theme';
@@ -42,14 +42,18 @@ export default function CategoryNav() {
         <span className="shrink-0 font-semibold uppercase tracking-wide text-ink/40">
           Categories
         </span>
-        {CATEGORIES.map((category) => (
+        {CATEGORIES.map((cat) => (
           <button
-            key={category}
+            key={cat.value}
             type="button"
-            onClick={() => handleClick(category)}
-            className="shrink-0 cursor-pointer whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-ink/70 transition-colors hover:bg-spark/15 hover:text-spark-deep"
+            title={cat.value}
+            onClick={() => handleClick(cat.value)}
+            className="flex shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 font-medium text-ink/70 transition-colors hover:bg-spark/15 hover:text-spark-deep"
           >
-            {category}
+            {cat.short}
+            <span className="rounded-full bg-ink/5 px-1.5 text-[10px] font-bold tabular-nums text-ink/40">
+              {cat.count}
+            </span>
           </button>
         ))}
       </nav>
