@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-parchment text-ink antialiased;
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(109, 40, 217, 0.06), transparent 40%);
+  background-attachment: fixed;
+}
+
+/* Long-form guide prose */
+.prose-guide p {
+  @apply mb-4 leading-relaxed text-ink/85;
+}
+.prose-guide p:last-child {
+  @apply mb-0;
+}
+
+/* Thin scrollbar for the pill rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
