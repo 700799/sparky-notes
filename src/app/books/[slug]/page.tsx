@@ -127,7 +127,7 @@ export default async function BookGuidePage({
 
       {/* Quick nav (deep-dive only) */}
       {toc.length > 0 && (
-        <nav className="sticky top-12 z-30 border-b border-ink/10 bg-parchment/90 backdrop-blur">
+        <nav className="sticky top-[76px] z-30 border-b border-ink/10 bg-parchment/90 backdrop-blur">
           <div className="no-scrollbar mx-auto flex max-w-4xl gap-2 overflow-x-auto px-4 py-2">
             {toc.map(([id, label]) => (
               <a
