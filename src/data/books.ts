@@ -6,6 +6,7 @@ import { classics4 } from './books/classics-4';
 import { modern } from './books/modern';
 import { contemporary } from './books/contemporary';
 import { deepDives } from './deepdives';
+import { deepDives2 } from './deepdives-2';
 
 export type { Book, GuideSection, Quote, Highlight } from './types';
 
@@ -18,7 +19,10 @@ export const books: Book[] = [
   ...modern,
   ...contemporary,
 ]
-  .map((b) => (deepDives[b.slug] ? { ...b, deepDive: deepDives[b.slug] } : b))
+  .map((b) => {
+    const dd = deepDives[b.slug] ?? deepDives2[b.slug];
+    return dd ? { ...b, deepDive: dd } : b;
+  })
   .sort((a, b) => a.title.localeCompare(b.title));
 
 export function getBook(slug: string): Book | undefined {
