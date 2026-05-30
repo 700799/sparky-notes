@@ -22,6 +22,10 @@ const slugsWithGenre = (genre: string) =>
 const slugsWithEra = (era: string) =>
   books.filter((b) => b.era === era).map((b) => b.slug);
 
+// Slugs of every book carrying at least one award/honor (set in book data
+// or via the award backfill in books.ts).
+const awardBookSlugs = books.filter((b) => b.awards && b.awards.length > 0).map((b) => b.slug);
+
 const completedAmong = (completed: Set<string>, slugs: string[]) =>
   slugs.filter((s) => completed.has(s)).length;
 
@@ -91,6 +95,17 @@ export const badges: Badge[] = [
   genreBadge('young-at-heart', 'Young at Heart', '🌱', 'Coming-of-Age'),
   eraBadge('bard-devotee', 'Devotee of the Bard', '🪶', 'Renaissance'),
   eraBadge('modern-reader', 'Modern Reader', '🌐', 'Modern'),
+  {
+    id: 'decorated-reader',
+    title: 'Decorated Reader',
+    description: 'Finish five award-winning or bestselling guides.',
+    emoji: '🏅',
+    bonusXp: 200,
+    progress: (completed) => ({
+      current: Math.min(completedAmong(completed, awardBookSlugs), 5),
+      target: 5,
+    }),
+  },
   {
     id: 'halfway-there',
     title: 'Halfway There',

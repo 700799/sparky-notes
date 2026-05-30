@@ -40,7 +40,12 @@ export default function BookCard({ book }: { book: Book }) {
         <p className="mt-2 flex-1 text-sm leading-snug text-ink/75">{book.hook}</p>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {book.themes.slice(0, 3).map((t) => (
+          {book.awards && book.awards.length > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-spark-deep/30 bg-spark/15 px-2.5 py-0.5 text-xs font-semibold text-spark-deep">
+              🏆 {book.awards[0]}
+            </span>
+          )}
+          {book.themes.slice(0, book.awards?.length ? 2 : 3).map((t) => (
             <Pill key={t} size="sm">
               {t}
             </Pill>

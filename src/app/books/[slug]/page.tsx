@@ -97,6 +97,18 @@ export default async function BookGuidePage({
             </div>
           </div>
           <p className="mt-4 max-w-2xl text-lg text-white/90">{book.hook}</p>
+          {book.awards && book.awards.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {book.awards.map((award) => (
+                <span
+                  key={award}
+                  className="inline-flex items-center gap-1 rounded-full bg-white/95 px-3 py-1 text-sm font-bold text-ink shadow-sm"
+                >
+                  🏆 {award}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="mt-5 flex flex-wrap gap-2">
             {book.themes.map((tag) => (
               <span
