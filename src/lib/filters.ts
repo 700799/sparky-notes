@@ -1,37 +1,51 @@
 import { books, type Book } from '@/data/books';
 
-export type FilterGroup = 'genre' | 'theme' | 'era';
+export type FilterGroup = 'genre' | 'theme' | 'era' | 'award';
 
 export interface ActiveFilters {
   genre: string[];
   theme: string[];
   era: string[];
+  award: string[];
 }
 
-export const emptyFilters = (): ActiveFilters => ({ genre: [], theme: [], era: [] });
+export const emptyFilters = (): ActiveFilters => ({
+  genre: [],
+  theme: [],
+  era: [],
+  award: [],
+});
 
 /**
  * Books carry granular genre/theme tags (great for the cards & guides), but that
  * produced ~20+ filter pills. For browsing we collapse those into a small set of
  * canonical buckets — a book belongs to a bucket if it has any member tag.
+ * `label` is the canonical filter value; `short` is the one-word display label.
  */
 interface Bucket {
   label: string;
+  short: string;
   members: string[];
 }
 
 const GENRE_BUCKETS: Bucket[] = [
-  { label: 'Tragedy', members: ['Tragedy'] },
-  { label: 'Dystopian & Sci-Fi', members: ['Dystopian', 'Science Fiction', 'Speculative'] },
-  { label: 'Coming-of-Age', members: ['Coming-of-Age', 'Vignettes'] },
-  { label: 'Gothic & Romance', members: ['Gothic', 'Romance'] },
-  { label: 'Drama', members: ['Drama'] },
+  { label: 'Tragedy', short: 'Tragedy', members: ['Tragedy'] },
+  {
+    label: 'Dystopian & Sci-Fi',
+    short: 'Dystopian',
+    members: ['Dystopian', 'Science Fiction', 'Speculative'],
+  },
+  { label: 'Coming-of-Age', short: 'Coming-of-Age', members: ['Coming-of-Age', 'Vignettes'] },
+  { label: 'Gothic & Romance', short: 'Gothic', members: ['Gothic', 'Romance'] },
+  { label: 'Drama', short: 'Drama', members: ['Drama'] },
   {
     label: 'Satire & Political',
+    short: 'Satire',
     members: ['Satire', 'Social Satire', 'Allegory', 'Fable', 'Political'],
   },
   {
     label: 'Historical & Realism',
+    short: 'Historical',
     members: [
       'Historical',
       'Social Realism',
@@ -43,12 +57,17 @@ const GENRE_BUCKETS: Bucket[] = [
       'Philosophical',
     ],
   },
-  { label: 'Epic & Adventure', members: ['Epic', 'Adventure', 'Survival', 'Graphic Novel'] },
+  {
+    label: 'Epic & Adventure',
+    short: 'Epic',
+    members: ['Epic', 'Adventure', 'Survival', 'Graphic Novel'],
+  },
 ];
 
 const THEME_BUCKETS: Bucket[] = [
   {
     label: 'Power & Politics',
+    short: 'Power',
     members: [
       'Power',
       'Surveillance',
@@ -62,6 +81,7 @@ const THEME_BUCKETS: Bucket[] = [
   },
   {
     label: 'Identity & Belonging',
+    short: 'Identity',
     members: [
       'Identity',
       'Belonging',
@@ -76,6 +96,7 @@ const THEME_BUCKETS: Bucket[] = [
   },
   {
     label: 'Morality & Justice',
+    short: 'Justice',
     members: [
       'Morality',
       'Justice',
@@ -91,6 +112,7 @@ const THEME_BUCKETS: Bucket[] = [
   },
   {
     label: 'Love & Family',
+    short: 'Love',
     members: [
       'Love',
       'Family',
@@ -102,17 +124,20 @@ const THEME_BUCKETS: Bucket[] = [
       'Obsession',
     ],
   },
-  { label: 'Race & Class', members: ['Race', 'Class', 'Slavery', 'Dignity'] },
+  { label: 'Race & Class', short: 'Race', members: ['Race', 'Class', 'Slavery', 'Dignity'] },
   {
     label: 'Dreams & Ambition',
+    short: 'Dreams',
     members: ['Dreams', 'The American Dream', 'Ambition', 'Destiny', 'Journey'],
   },
   {
     label: 'Freedom & Society',
+    short: 'Freedom',
     members: ['Freedom', 'Religion', 'Tradition', 'Civilization', 'Consumerism', 'Violence'],
   },
   {
     label: 'Science & Mortality',
+    short: 'Science',
     members: [
       'Science',
       'Technology',
@@ -131,6 +156,22 @@ const THEME_BUCKETS: Bucket[] = [
   },
 ];
 
+// Award buckets map a one-word label to substrings matched against a book's
+// `awards` strings (e.g. "Pulitzer Prize", "#1 NYT Bestseller", "Newbery Medal").
+interface AwardBucket {
+  label: string;
+  short: string;
+  match: string[];
+}
+
+const AWARD_BUCKETS: AwardBucket[] = [
+  { label: 'Pulitzer Prize', short: 'Pulitzer', match: ['Pulitzer'] },
+  { label: 'Booker Prize', short: 'Booker', match: ['Booker'] },
+  { label: 'National Book Award', short: 'National', match: ['National Book Award'] },
+  { label: 'Newbery Medal', short: 'Newbery', match: ['Newbery'] },
+  { label: 'NYT Bestseller', short: 'Bestseller', match: ['NYT', 'Bestseller', 'Bestselling'] },
+];
+
 function bucketsFor(values: string[], buckets: Bucket[]): string[] {
   return buckets
     .filter((bucket) => bucket.members.some((m) => values.includes(m)))
@@ -143,6 +184,14 @@ export const canonicalGenres = (book: Book): string[] => bucketsFor(book.genres,
 /** Canonical theme buckets a book belongs to (used by the filter bar). */
 export const canonicalThemes = (book: Book): string[] => bucketsFor(book.themes, THEME_BUCKETS);
 
+/** Canonical award buckets a book belongs to, derived from its `awards` strings. */
+export const canonicalAwards = (book: Book): string[] => {
+  const awards = book.awards ?? [];
+  return AWARD_BUCKETS.filter((bucket) =>
+    awards.some((a) => bucket.match.some((m) => a.toLowerCase().includes(m.toLowerCase()))),
+  ).map((bucket) => bucket.label);
+};
+
 /** Canonical genre pills, in display order, limited to those with matching books. */
 export function allGenres(): string[] {
   const present = new Set(books.flatMap(canonicalGenres));
@@ -153,6 +202,12 @@ export function allGenres(): string[] {
 export function allThemes(): string[] {
   const present = new Set(books.flatMap(canonicalThemes));
   return THEME_BUCKETS.map((b) => b.label).filter((label) => present.has(label));
+}
+
+/** Canonical award pills, in display order, limited to those with matching books. */
+export function allAwards(): string[] {
+  const present = new Set(books.flatMap(canonicalAwards));
+  return AWARD_BUCKETS.map((b) => b.label).filter((label) => present.has(label));
 }
 
 /** Eras in chronological (not alphabetical) order. */
@@ -170,21 +225,53 @@ export function allEras(): string[] {
   return order.filter((e) => present.has(e));
 }
 
+/** A filter option: canonical value, one-word display label, and book count. */
+export interface FacetOption {
+  value: string;
+  short: string;
+  count: number;
+}
+
+const SHORT_BY_VALUE = new Map<string, string>([
+  ...GENRE_BUCKETS.map((b) => [b.label, b.short] as const),
+  ...THEME_BUCKETS.map((b) => [b.label, b.short] as const),
+  ...AWARD_BUCKETS.map((b) => [b.label, b.short] as const),
+]);
+
+function countFor(group: Exclude<FilterGroup, 'era'>, value: string): number {
+  const fn =
+    group === 'genre' ? canonicalGenres : group === 'theme' ? canonicalThemes : canonicalAwards;
+  return books.filter((b) => fn(b).includes(value)).length;
+}
+
+/** Options (value + one-word label + count) for a facet group, present-only. */
+export function facetOptions(group: 'genre' | 'theme' | 'award'): FacetOption[] {
+  const values =
+    group === 'genre' ? allGenres() : group === 'theme' ? allThemes() : allAwards();
+  return values.map((value) => ({
+    value,
+    short: SHORT_BY_VALUE.get(value) ?? value,
+    count: countFor(group, value),
+  }));
+}
+
 /**
  * Filter by the active pills. Within a group the match is OR; across groups it is
- * AND. Genre/theme are matched against the book's canonical buckets.
+ * AND. Genre/theme/award are matched against the book's canonical buckets.
  */
 export function filterBooks(active: ActiveFilters, source: Book[] = books): Book[] {
   return source.filter((book) => {
     const genres = canonicalGenres(book);
     const themes = canonicalThemes(book);
+    const awards = canonicalAwards(book);
     const genreOk = active.genre.length === 0 || active.genre.some((g) => genres.includes(g));
     const themeOk = active.theme.length === 0 || active.theme.some((t) => themes.includes(t));
     const eraOk = active.era.length === 0 || active.era.includes(book.era);
-    return genreOk && themeOk && eraOk;
+    const awardOk = active.award.length === 0 || active.award.some((a) => awards.includes(a));
+    return genreOk && themeOk && eraOk && awardOk;
   });
 }
 
 export function countActive(active: ActiveFilters): number {
-  return active.genre.length + active.theme.length + active.era.length;
+  return active.genre.length + active.theme.length + active.era.length + active.award.length;
 }
