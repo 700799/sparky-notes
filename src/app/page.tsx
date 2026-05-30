@@ -16,30 +16,29 @@ export default function HomePage() {
   return (
     <div className="pb-10">
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:pt-14">
+      <section className="mx-auto max-w-6xl px-4 pb-6 pt-6 sm:pt-8">
         <div className="max-w-3xl">
-          <span className="inline-flex items-center gap-2 rounded-full bg-spark/15 px-3 py-1 text-sm font-semibold text-spark-deep">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-spark/15 px-3 py-1 text-xs font-semibold text-spark-deep">
             ⚡ {bookCount} deep reading guides
           </span>
-          <h1 className="mt-4 font-serif text-4xl font-black leading-tight text-ink sm:text-5xl">
+          <h1 className="mt-3 font-serif text-3xl font-black leading-tight text-ink sm:text-4xl">
             Actually understand the books you have to read.
           </h1>
-          <p className="mt-4 text-lg leading-relaxed text-ink/75">
-            Thorough <strong>literary analysis</strong>, the <strong>best quotes</strong>, and a
-            section on how each book connects to <strong>today&rsquo;s world (2026)</strong> — from{' '}
-            <em>1984</em>&rsquo;s surveillance state to <em>The Handmaid&rsquo;s Tale</em>. Filter
-            by genre, theme, or era and start browsing.
+          <p className="mt-2 text-base leading-relaxed text-ink/70">
+            Thorough <strong>literary analysis</strong>, the <strong>best quotes</strong>, and how
+            each book connects to <strong>today&rsquo;s world (2026)</strong> — filter by theme and
+            start browsing.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href="/#browse"
-              className="rounded-full bg-ink px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-ink-soft"
+              className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-ink-soft"
             >
               Browse the library
             </Link>
             <Link
               href="/rewards"
-              className="rounded-full border border-ink/20 bg-white px-6 py-3 font-semibold text-ink transition hover:border-spark"
+              className="rounded-full border border-ink/20 bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-spark"
             >
               🏆 Earn rewards as you read
             </Link>
