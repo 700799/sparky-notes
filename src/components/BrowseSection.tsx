@@ -11,6 +11,7 @@ import {
 } from '@/lib/filters';
 import FilterPills from './FilterPills';
 import BookCard from './BookCard';
+import { FILTER_THEME_EVENT } from './CategoryNav';
 
 /**
  * The browse-first core of the home page: the pill filter bar plus the live
@@ -19,14 +20,27 @@ import BookCard from './BookCard';
 export default function BrowseSection({ books }: { books: Book[] }) {
   const [active, setActive] = useState<ActiveFilters>(emptyFilters);
 
-  // Honor a ?theme=<Category> query param (set by the header category menu),
-  // so a category link lands on a pre-filtered grid. Read on the client only.
+  // Honor a ?theme=<Category> query param (set when navigating home from a
+  // guide page via the header category menu) so we land on a filtered grid.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requested = params.getAll('theme').filter((t) => allThemes().includes(t));
     if (requested.length > 0) {
       setActive((prev) => ({ ...prev, theme: requested }));
     }
+  }, []);
+
+  // When the header category row is clicked while already on the home page,
+  // it dispatches an event with the chosen theme; apply it as the sole theme.
+  useEffect(() => {
+    const onFilterTheme = (e: Event) => {
+      const theme = (e as CustomEvent<string>).detail;
+      if (theme && allThemes().includes(theme)) {
+        setActive((prev) => ({ ...prev, theme: [theme] }));
+      }
+    };
+    window.addEventListener(FILTER_THEME_EVENT, onFilterTheme);
+    return () => window.removeEventListener(FILTER_THEME_EVENT, onFilterTheme);
   }, []);
 
   const toggle = (group: FilterGroup, value: string) => {
@@ -43,7 +57,7 @@ export default function BrowseSection({ books }: { books: Book[] }) {
   const visible = useMemo(() => filterBooks(active, books), [active, books]);
 
   return (
-    <section id="browse" className="mx-auto max-w-6xl px-4">
+    <section id="browse" className="mx-auto max-w-6xl scroll-mt-24 px-4">
       <div className="rounded-2xl bg-white/60 p-5 ring-1 ring-ink/5 backdrop-blur">
         <FilterPills active={active} onToggle={toggle} onClear={clear} />
       </div>
