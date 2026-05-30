@@ -98,7 +98,7 @@ export default async function BookGuidePage({
           </div>
           <p className="mt-4 max-w-2xl text-lg text-white/90">{book.hook}</p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {[...book.genres, book.era, ...book.themes].map((tag) => (
+            {book.themes.map((tag) => (
               <span
                 key={tag}
                 className="rounded-full bg-white/15 px-3 py-1 text-sm font-medium text-white"

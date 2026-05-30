@@ -40,12 +40,7 @@ export default function BookCard({ book }: { book: Book }) {
         <p className="mt-2 flex-1 text-sm leading-snug text-ink/75">{book.hook}</p>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {book.genres.slice(0, 2).map((g) => (
-            <Pill key={g} size="sm">
-              {g}
-            </Pill>
-          ))}
-          {book.themes.slice(0, 1).map((t) => (
+          {book.themes.slice(0, 3).map((t) => (
             <Pill key={t} size="sm">
               {t}
             </Pill>
