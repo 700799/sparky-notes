@@ -9,6 +9,7 @@ import type { BookDeepDive } from './types';
 import { deepDives } from './deepdives';
 import { deepDives2 } from './deepdives-2';
 import { deepDives3 } from './deepdives-3';
+import { deepDives4 } from './deepdives-4';
 
 export type { Book, GuideSection, Quote, Highlight } from './types';
 
@@ -17,6 +18,7 @@ const allDeepDives: Record<string, BookDeepDive> = {
   ...deepDives,
   ...deepDives2,
   ...deepDives3,
+  ...deepDives4,
 };
 
 /** The full collection, sorted alphabetically by title for stable browsing. */
