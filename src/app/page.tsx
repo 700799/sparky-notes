@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { books, bookCount } from '@/data/books';
+import { books, bookCount, type BookCardData } from '@/data/books';
 import BrowseSection from '@/components/BrowseSection';
 import HighlightCard, { type HighlightPost } from '@/components/HighlightCard';
 
@@ -11,6 +11,26 @@ const highlightPosts: HighlightPost[] = books.map((b) => ({
   accent: b.accent,
   emoji: b.emoji,
 }));
+
+// The browse grid is a client component, so everything passed to it is
+// serialized into the page. Send only the lightweight card fields; the full
+// guide prose (summary, analysis, deep dives) stays on each guide page.
+const browseBooks: BookCardData[] = books.map(
+  ({ slug, title, author, year, era, region, genres, themes, accent, emoji, hook, awards }) => ({
+    slug,
+    title,
+    author,
+    year,
+    era,
+    region,
+    genres,
+    themes,
+    accent,
+    emoji,
+    hook,
+    awards,
+  }),
+);
 
 export default function HomePage() {
   return (
@@ -47,7 +67,7 @@ export default function HomePage() {
       </section>
 
       {/* Browse-first: filter pills + live grid */}
-      <BrowseSection books={books} />
+      <BrowseSection books={browseBooks} />
 
       {/* Key Highlights — card-like posts at the bottom */}
       <section id="highlights" className="mx-auto mt-16 max-w-6xl scroll-mt-20 px-4">

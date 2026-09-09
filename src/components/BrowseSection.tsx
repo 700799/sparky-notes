@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { Book } from '@/data/books';
+import type { BookCardData } from '@/data/books';
 import {
   allThemes,
   emptyFilters,
@@ -17,7 +17,7 @@ import { FILTER_THEME_EVENT } from './CategoryNav';
  * The browse-first core of the home page: the pill filter bar plus the live
  * book grid. Filtering is entirely client-side over the static book list.
  */
-export default function BrowseSection({ books }: { books: Book[] }) {
+export default function BrowseSection({ books }: { books: BookCardData[] }) {
   const [active, setActive] = useState<ActiveFilters>(emptyFilters);
 
   // Honor a ?theme=<Category> query param (set when navigating home from a

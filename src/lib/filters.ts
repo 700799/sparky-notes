@@ -1,4 +1,4 @@
-import { books, type Book } from '@/data/books';
+import { books, type Book, type BookCardData } from '@/data/books';
 
 export type FilterGroup = 'genre' | 'theme' | 'era' | 'award';
 
@@ -179,13 +179,13 @@ function bucketsFor(values: string[], buckets: Bucket[]): string[] {
 }
 
 /** Canonical genre buckets a book belongs to (used by the filter bar). */
-export const canonicalGenres = (book: Book): string[] => bucketsFor(book.genres, GENRE_BUCKETS);
+export const canonicalGenres = (book: BookCardData): string[] => bucketsFor(book.genres, GENRE_BUCKETS);
 
 /** Canonical theme buckets a book belongs to (used by the filter bar). */
-export const canonicalThemes = (book: Book): string[] => bucketsFor(book.themes, THEME_BUCKETS);
+export const canonicalThemes = (book: BookCardData): string[] => bucketsFor(book.themes, THEME_BUCKETS);
 
 /** Canonical award buckets a book belongs to, derived from its `awards` strings. */
-export const canonicalAwards = (book: Book): string[] => {
+export const canonicalAwards = (book: BookCardData): string[] => {
   const awards = book.awards ?? [];
   return AWARD_BUCKETS.filter((bucket) =>
     awards.some((a) => bucket.match.some((m) => a.toLowerCase().includes(m.toLowerCase()))),
@@ -259,7 +259,10 @@ export function facetOptions(group: 'genre' | 'theme' | 'award'): FacetOption[] 
  * Filter by the active pills. Within a group the match is OR; across groups it is
  * AND. Genre/theme/award are matched against the book's canonical buckets.
  */
-export function filterBooks(active: ActiveFilters, source: Book[] = books): Book[] {
+export function filterBooks<T extends BookCardData = Book>(
+  active: ActiveFilters,
+  source: T[] = books as unknown as T[],
+): T[] {
   return source.filter((book) => {
     const genres = canonicalGenres(book);
     const themes = canonicalThemes(book);

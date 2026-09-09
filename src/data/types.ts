@@ -101,3 +101,25 @@ export interface Book {
   /** Expanded, in-depth guide (optional; rolled out progressively). */
   deepDive?: BookDeepDive;
 }
+
+/**
+ * The lightweight subset of a Book needed to render a browse card and run the
+ * client-side filters. The home page passes only this shape into the client
+ * browse grid so the long guide prose (summary, analysis, deep dives) is never
+ * serialized into the home page payload.
+ */
+export type BookCardData = Pick<
+  Book,
+  | 'slug'
+  | 'title'
+  | 'author'
+  | 'year'
+  | 'era'
+  | 'region'
+  | 'genres'
+  | 'themes'
+  | 'accent'
+  | 'emoji'
+  | 'hook'
+  | 'awards'
+>;

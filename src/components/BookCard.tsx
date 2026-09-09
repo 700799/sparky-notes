@@ -1,12 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import type { Book } from '@/data/books';
+import type { BookCardData } from '@/data/books';
 import { useProgress } from '@/lib/progress';
 import Pill from './Pill';
 
 /** A browse card for a single book. Shows a ✓ ribbon once the guide is read. */
-export default function BookCard({ book }: { book: Book }) {
+export default function BookCard({ book }: { book: BookCardData }) {
   const { isComplete, hydrated } = useProgress();
   const done = hydrated && isComplete(book.slug);
 

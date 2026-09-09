@@ -17,7 +17,7 @@ import { deepDives6 } from './deepdives-6';
 import { deepDives7 } from './deepdives-7';
 import { deepDives8 } from './deepdives-8';
 
-export type { Book, GuideSection, Quote, Highlight } from './types';
+export type { Book, BookCardData, GuideSection, Quote, Highlight } from './types';
 
 // Deep-dive guides are authored in batches; merge them into one lookup keyed by slug.
 const allDeepDives: Record<string, BookDeepDive> = {
