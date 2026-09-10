@@ -40,7 +40,7 @@ export const awardWinners: Book[] = [
     ],
     currentEvents: [
       {
-        heading: 'Propaganda and Manufactured Truth',
+        heading: 'Propaganda and Disinformation',
         body:
           'The book burning in the town square is the novel’s clearest picture of how a state manages what its people are permitted to think. The bonfire is staged as a birthday celebration, complete with speeches and a cheering crowd, so that censorship arrives wearing the costume of a festival. Liesel’s response is not a speech but a theft: she waits until the officials leave, pulls a smoking book out of the pile, and hides it under her shirt, where it burns her skin. Reading, in that moment, becomes civil disobedience committed by a child.\n\nIn 2026 the machinery is different and the logic is familiar. Recommendation systems, synthetic video, and coordinated influence campaigns make it cheap to flood a population with claims that feel true, while organized challenges to school and library collections keep deciding which books students can actually reach. Zusak’s regime had to gather the books in one place and set them alight; a modern information environment can simply drown a fact in noise or quietly remove a title from a shelf.\n\nWhat the novel offers is not a policy but a habit of mind. Liesel survives the lie by learning to read closely, by asking what particular words are for, and finally by writing her own account of what happened on her street. The best defense against a manufactured story is still the ability to test it against evidence and to tell a truer one.',
       },
@@ -116,7 +116,7 @@ export const awardWinners: Book[] = [
     ],
     currentEvents: [
       {
-        heading: 'Police Violence and Public Accountability',
+        heading: 'Police Violence and Black Lives Matter',
         body:
           'Thomas began the novel as a college short story after the killing of Oscar Grant, and it reached print in the middle of a decade of protest over police killings of unarmed Black Americans. What the book adds to the coverage is the hour before and the year after: who Khalil was to Starr, what a hairbrush looks like in a stranger’s hand at night, and how quickly a dead teenager is converted into a debate about his record.\n\nRead in 2026, the pattern it dramatizes has not resolved. Body cameras, consent decrees, and civilian review boards have changed procedure in many departments, and prosecutors and grand juries still frequently decline to charge, so the argument the novel stages between Starr’s father and her police-officer uncle remains entirely live. Uncle Carlos is not a straw man: he loves Starr, he wears the badge, and he cannot fully defend what his colleague did.\n\nThe novel’s real contribution is scale. National conversations run on statistics and viral clips, while this book insists on a name, a childhood friendship, a girl who has to walk past the spot, and a mother deciding whether to move her family. That shift from case to person is what makes it valuable in a classroom, where the hardest thing to teach is that the headline was somebody’s Friday night.',
       },
@@ -266,12 +266,12 @@ export const awardWinners: Book[] = [
     ],
     currentEvents: [
       {
-        heading: 'Citizenship and Generational Belonging',
+        heading: 'Immigration and Generational Belonging',
         body:
           'The novel’s central legal fact is that being born somewhere is not always the same as belonging to it. Japanese nationality passes by descent rather than by birthplace, so Sunja’s grandchildren remain foreigners in the only country they have ever known, carrying registration cards and choosing between a Korean name and a Japanese one at every job interview. Lee shows what that does across decades: not one dramatic injustice, but a lifetime of small closed doors.\n\nIn 2026 versions of this question are being argued in many countries at once, over birthright citizenship, over the status of long-settled communities, and over what a state owes people who have lived and paid taxes inside it for generations without full membership. The novel is useful in those arguments precisely because it refuses abstraction. It asks what a rule about nationality does to a fourteen-year-old being fingerprinted on his birthday.\n\nThe book also complicates the assimilation story that immigration debates lean on. Noa does everything a host society claims to want, erasing his accent, excelling academically, taking a Japanese name, and it kills him, because the bargain he accepted required him to despise where he came from. Belonging that demands self-erasure, Lee suggests, is not belonging at all.',
       },
       {
-        heading: 'Diaspora, Identity, and Who Tells the Story',
+        heading: 'Asian Diaspora and Identity',
         body:
           'Lee worked on this book for nearly thirty years, including years of interviews in Japan, and the result is a portrait of a diaspora community most Western readers had never encountered. That specificity is exactly what lets it travel. Readers with no connection to Korea or Japan still recognize the shape of it: the grandmother who never learned the new language, the child who translates for her, the grandchild who is fluent and still asked where he is really from.\n\nThe novel arrived alongside a broader shift in what gets published and adapted, and the television series made from it carried the Zainichi story to a global audience in Korean, Japanese, and English at once. That reception is part of a 2026 conversation about who is entitled to narrate a diaspora and in whose language, and the book’s trilingual world is an argument in itself.\n\nWhat keeps it from being merely representative is its refusal to appoint a spokesman. Sunja, Noa, Mozasu, and Solomon draw opposite conclusions from the same inheritance, and Lee treats every one of those conclusions as costly and comprehensible. Identity here is not a badge but a negotiation conducted under pressure, generation after generation.',
       },
