@@ -1,4 +1,4 @@
-import { books, type Book, type BookCardData } from '@/data/books';
+import type { BookCardData } from '@/data/books';
 
 export type FilterGroup = 'genre' | 'theme' | 'era' | 'award';
 
@@ -193,25 +193,25 @@ export const canonicalAwards = (book: BookCardData): string[] => {
 };
 
 /** Canonical genre pills, in display order, limited to those with matching books. */
-export function allGenres(): string[] {
-  const present = new Set(books.flatMap(canonicalGenres));
+export function allGenres(list: BookCardData[]): string[] {
+  const present = new Set(list.flatMap(canonicalGenres));
   return GENRE_BUCKETS.map((b) => b.label).filter((label) => present.has(label));
 }
 
 /** Canonical theme pills, in display order, limited to those with matching books. */
-export function allThemes(): string[] {
-  const present = new Set(books.flatMap(canonicalThemes));
+export function allThemes(list: BookCardData[]): string[] {
+  const present = new Set(list.flatMap(canonicalThemes));
   return THEME_BUCKETS.map((b) => b.label).filter((label) => present.has(label));
 }
 
 /** Canonical award pills, in display order, limited to those with matching books. */
-export function allAwards(): string[] {
-  const present = new Set(books.flatMap(canonicalAwards));
+export function allAwards(list: BookCardData[]): string[] {
+  const present = new Set(list.flatMap(canonicalAwards));
   return AWARD_BUCKETS.map((b) => b.label).filter((label) => present.has(label));
 }
 
 /** Eras in chronological (not alphabetical) order. */
-export function allEras(): string[] {
+export function allEras(list: BookCardData[]): string[] {
   const order = [
     'Ancient',
     'Renaissance',
@@ -221,7 +221,7 @@ export function allEras(): string[] {
     'Modern',
     'Contemporary',
   ];
-  const present = new Set(books.map((b) => b.era));
+  const present = new Set(list.map((b) => b.era));
   return order.filter((e) => present.has(e));
 }
 
@@ -238,20 +238,27 @@ const SHORT_BY_VALUE = new Map<string, string>([
   ...AWARD_BUCKETS.map((b) => [b.label, b.short] as const),
 ]);
 
-function countFor(group: Exclude<FilterGroup, 'era'>, value: string): number {
+function countFor(
+  group: Exclude<FilterGroup, 'era'>,
+  value: string,
+  list: BookCardData[],
+): number {
   const fn =
     group === 'genre' ? canonicalGenres : group === 'theme' ? canonicalThemes : canonicalAwards;
-  return books.filter((b) => fn(b).includes(value)).length;
+  return list.filter((b) => fn(b).includes(value)).length;
 }
 
 /** Options (value + one-word label + count) for a facet group, present-only. */
-export function facetOptions(group: 'genre' | 'theme' | 'award'): FacetOption[] {
+export function facetOptions(
+  group: 'genre' | 'theme' | 'award',
+  list: BookCardData[],
+): FacetOption[] {
   const values =
-    group === 'genre' ? allGenres() : group === 'theme' ? allThemes() : allAwards();
+    group === 'genre' ? allGenres(list) : group === 'theme' ? allThemes(list) : allAwards(list);
   return values.map((value) => ({
     value,
     short: SHORT_BY_VALUE.get(value) ?? value,
-    count: countFor(group, value),
+    count: countFor(group, value, list),
   }));
 }
 
@@ -259,10 +266,7 @@ export function facetOptions(group: 'genre' | 'theme' | 'award'): FacetOption[] 
  * Filter by the active pills. Within a group the match is OR; across groups it is
  * AND. Genre/theme/award are matched against the book's canonical buckets.
  */
-export function filterBooks<T extends BookCardData = Book>(
-  active: ActiveFilters,
-  source: T[] = books as unknown as T[],
-): T[] {
+export function filterBooks<T extends BookCardData>(active: ActiveFilters, source: T[]): T[] {
   return source.filter((book) => {
     const genres = canonicalGenres(book);
     const themes = canonicalThemes(book);

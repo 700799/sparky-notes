@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { BookCardData } from '@/data/books';
 import {
   allThemes,
+  facetOptions,
   emptyFilters,
   filterBooks,
   type ActiveFilters,
@@ -20,28 +21,40 @@ import { FILTER_THEME_EVENT } from './CategoryNav';
 export default function BrowseSection({ books }: { books: BookCardData[] }) {
   const [active, setActive] = useState<ActiveFilters>(emptyFilters);
 
+  // Facets are derived from the book list passed in by the server, so this
+  // component never imports the full (prose-laden) book data.
+  const options = useMemo(
+    () => ({
+      theme: facetOptions('theme', books),
+      genre: facetOptions('genre', books),
+      award: facetOptions('award', books),
+    }),
+    [books],
+  );
+  const themeValues = useMemo(() => allThemes(books), [books]);
+
   // Honor a ?theme=<Category> query param (set when navigating home from a
   // guide page via the header category menu) so we land on a filtered grid.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const requested = params.getAll('theme').filter((t) => allThemes().includes(t));
+    const requested = params.getAll('theme').filter((t) => themeValues.includes(t));
     if (requested.length > 0) {
       setActive((prev) => ({ ...prev, theme: requested }));
     }
-  }, []);
+  }, [themeValues]);
 
   // When the header category row is clicked while already on the home page,
   // it dispatches an event with the chosen theme; apply it as the sole theme.
   useEffect(() => {
     const onFilterTheme = (e: Event) => {
       const theme = (e as CustomEvent<string>).detail;
-      if (theme && allThemes().includes(theme)) {
+      if (theme && themeValues.includes(theme)) {
         setActive((prev) => ({ ...prev, theme: [theme] }));
       }
     };
     window.addEventListener(FILTER_THEME_EVENT, onFilterTheme);
     return () => window.removeEventListener(FILTER_THEME_EVENT, onFilterTheme);
-  }, []);
+  }, [themeValues]);
 
   const toggle = (group: FilterGroup, value: string) => {
     setActive((prev) => {
@@ -59,7 +72,7 @@ export default function BrowseSection({ books }: { books: BookCardData[] }) {
   return (
     <section id="browse" className="mx-auto max-w-6xl scroll-mt-24 px-4">
       <div className="rounded-2xl bg-white/60 p-5 ring-1 ring-ink/5 backdrop-blur">
-        <FilterPills active={active} onToggle={toggle} onClear={clear} />
+        <FilterPills active={active} onToggle={toggle} onClear={clear} options={options} />
       </div>
 
       <p className="mt-4 text-sm text-ink/50">

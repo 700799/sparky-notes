@@ -108,6 +108,18 @@ export interface Book {
  * browse grid so the long guide prose (summary, analysis, deep dives) is never
  * serialized into the home page payload.
  */
+/**
+ * Lightweight, serializable facts about a book: enough to evaluate badge
+ * progress without pulling any guide prose along. The server derives these and
+ * passes them to client code, which must never import the full book data.
+ */
+export interface BookFacet {
+  slug: string;
+  genres: string[];
+  era: string;
+  hasAwards: boolean;
+}
+
 export type BookCardData = Pick<
   Book,
   | 'slug'
