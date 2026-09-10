@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import HeaderStats from './HeaderStats';
 import CategoryNav from './CategoryNav';
+import { books } from '@/data/books';
+import { facetOptions } from '@/lib/filters';
+
+// Computed on the server so the category row never pulls guide prose into the
+// client bundle; CategoryNav receives the finished options as props.
+const CATEGORIES = facetOptions('theme', books);
 
 // One-word quick-nav links shown in the top bar on every screen size.
 const NAV_LINKS = [
@@ -39,7 +45,7 @@ export default function Header() {
       </div>
 
       {/* Second row: theme categories that filter the grid and scroll to it. */}
-      <CategoryNav />
+      <CategoryNav categories={CATEGORIES} />
     </header>
   );
 }

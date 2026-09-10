@@ -1,9 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { facetOptions } from '@/lib/filters';
-
-const CATEGORIES = facetOptions('theme');
+import type { FacetOption } from '@/lib/filters';
 
 /** Event other components can listen for to apply a theme filter. */
 export const FILTER_THEME_EVENT = 'sparky:filter-theme';
@@ -21,7 +19,7 @@ function scrollToBrowse() {
  * (via a custom event BrowseSection listens for) and scrolls down to the grid,
  * so it works whether or not the user is already on the home page.
  */
-export default function CategoryNav() {
+export default function CategoryNav({ categories }: { categories: FacetOption[] }) {
   const router = useRouter();
 
   const handleClick = (category: string) => {
@@ -42,7 +40,7 @@ export default function CategoryNav() {
         <span className="shrink-0 font-semibold uppercase tracking-wide text-ink/40">
           Categories
         </span>
-        {CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat.value}
             type="button"

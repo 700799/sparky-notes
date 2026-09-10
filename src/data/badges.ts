@@ -1,4 +1,4 @@
-import { books, bookCount } from './books';
+import type { BookFacet } from './types';
 
 export interface BadgeProgress {
   current: number;
@@ -16,122 +16,131 @@ export interface Badge {
   progress: (completed: Set<string>) => BadgeProgress;
 }
 
-const slugsWithGenre = (genre: string) =>
-  books.filter((b) => b.genres.includes(genre)).map((b) => b.slug);
-
-const slugsWithEra = (era: string) =>
-  books.filter((b) => b.era === era).map((b) => b.slug);
-
-// Slugs of every book carrying at least one award/honor (set in book data
-// or via the award backfill in books.ts).
-const awardBookSlugs = books.filter((b) => b.awards && b.awards.length > 0).map((b) => b.slug);
-
 const completedAmong = (completed: Set<string>, slugs: string[]) =>
   slugs.filter((s) => completed.has(s)).length;
 
-function genreBadge(
-  id: string,
-  title: string,
-  emoji: string,
-  genre: string,
-  bonusXp = 150,
-): Badge {
-  const slugs = slugsWithGenre(genre);
-  return {
-    id,
-    title,
-    description: `Finish every ${genre} guide in the collection.`,
-    emoji,
-    bonusXp,
-    progress: (completed) => ({
-      current: completedAmong(completed, slugs),
-      target: slugs.length,
-    }),
-  };
-}
+/**
+ * Build the achievement list from lightweight book facts.
+ *
+ * This takes `BookFacet[]` rather than importing the book data directly so the
+ * module never pulls guide prose into the client bundle: `ProgressProvider` is
+ * a client component, and anything it imports is shipped to the browser. The
+ * server passes the facets down as props instead.
+ */
+export function buildBadges(facets: BookFacet[], total: number): Badge[] {
+  const slugsWithGenre = (genre: string) =>
+    facets.filter((b) => b.genres.includes(genre)).map((b) => b.slug);
 
-function eraBadge(
-  id: string,
-  title: string,
-  emoji: string,
-  era: string,
-  bonusXp = 150,
-): Badge {
-  const slugs = slugsWithEra(era);
-  return {
-    id,
-    title,
-    description: `Finish every ${era} guide in the collection.`,
-    emoji,
-    bonusXp,
-    progress: (completed) => ({
-      current: completedAmong(completed, slugs),
-      target: slugs.length,
-    }),
-  };
-}
+  const slugsWithEra = (era: string) =>
+    facets.filter((b) => b.era === era).map((b) => b.slug);
 
-/** All achievements, evaluated purely from the set of completed book slugs. */
-export const badges: Badge[] = [
-  {
-    id: 'first-chapter',
-    title: 'First Chapter',
-    description: 'Finish your very first reading guide.',
-    emoji: '📖',
-    bonusXp: 50,
-    progress: (completed) => ({ current: Math.min(completed.size, 1), target: 1 }),
-  },
-  {
-    id: 'getting-serious',
-    title: 'Getting Serious',
-    description: 'Finish five reading guides.',
-    emoji: '📚',
-    bonusXp: 100,
-    progress: (completed) => ({ current: Math.min(completed.size, 5), target: 5 }),
-  },
-  genreBadge('dystopian-scholar', 'Dystopian Scholar', '👁️', 'Dystopian'),
-  genreBadge('tragedian', 'Master Tragedian', '🎭', 'Tragedy'),
-  genreBadge('gothic-soul', 'Gothic Soul', '🦇', 'Gothic'),
-  genreBadge('young-at-heart', 'Young at Heart', '🌱', 'Coming-of-Age'),
-  eraBadge('bard-devotee', 'Devotee of the Bard', '🪶', 'Renaissance'),
-  eraBadge('modern-reader', 'Modern Reader', '🌐', 'Modern'),
-  {
-    id: 'decorated-reader',
-    title: 'Decorated Reader',
-    description: 'Finish five award-winning or bestselling guides.',
-    emoji: '🏅',
-    bonusXp: 200,
-    progress: (completed) => ({
-      current: Math.min(completedAmong(completed, awardBookSlugs), 5),
-      target: 5,
-    }),
-  },
-  {
-    id: 'halfway-there',
-    title: 'Halfway There',
-    description: 'Finish half of the entire collection.',
-    emoji: '⛰️',
-    bonusXp: 250,
-    progress: (completed) => ({
-      current: Math.min(completed.size, Math.ceil(bookCount / 2)),
-      target: Math.ceil(bookCount / 2),
-    }),
-  },
-  {
-    id: 'completionist',
-    title: 'Canon Completionist',
-    description: 'Finish every single reading guide. The ultimate flex.',
-    emoji: '🏆',
-    bonusXp: 1000,
-    progress: (completed) => ({ current: completed.size, target: bookCount }),
-  },
-];
+  // Slugs of every book carrying at least one award/honor (set in book data
+  // or via the award backfill in books.ts).
+  const awardBookSlugs = facets.filter((b) => b.hasAwards).map((b) => b.slug);
+
+  const genreBadge = (
+    id: string,
+    title: string,
+    emoji: string,
+    genre: string,
+    bonusXp = 150,
+  ): Badge => {
+    const slugs = slugsWithGenre(genre);
+    return {
+      id,
+      title,
+      description: `Finish every ${genre} guide in the collection.`,
+      emoji,
+      bonusXp,
+      progress: (completed) => ({
+        current: completedAmong(completed, slugs),
+        target: slugs.length,
+      }),
+    };
+  };
+
+  const eraBadge = (
+    id: string,
+    title: string,
+    emoji: string,
+    era: string,
+    bonusXp = 150,
+  ): Badge => {
+    const slugs = slugsWithEra(era);
+    return {
+      id,
+      title,
+      description: `Finish every ${era} guide in the collection.`,
+      emoji,
+      bonusXp,
+      progress: (completed) => ({
+        current: completedAmong(completed, slugs),
+        target: slugs.length,
+      }),
+    };
+  };
+
+  return [
+    {
+      id: 'first-chapter',
+      title: 'First Chapter',
+      description: 'Finish your very first reading guide.',
+      emoji: '📖',
+      bonusXp: 50,
+      progress: (completed) => ({ current: Math.min(completed.size, 1), target: 1 }),
+    },
+    {
+      id: 'getting-serious',
+      title: 'Getting Serious',
+      description: 'Finish five reading guides.',
+      emoji: '📚',
+      bonusXp: 100,
+      progress: (completed) => ({ current: Math.min(completed.size, 5), target: 5 }),
+    },
+    genreBadge('dystopian-scholar', 'Dystopian Scholar', '👁️', 'Dystopian'),
+    genreBadge('tragedian', 'Master Tragedian', '🎭', 'Tragedy'),
+    genreBadge('gothic-soul', 'Gothic Soul', '🦇', 'Gothic'),
+    genreBadge('young-at-heart', 'Young at Heart', '🌱', 'Coming-of-Age'),
+    eraBadge('bard-devotee', 'Devotee of the Bard', '🪶', 'Renaissance'),
+    eraBadge('modern-reader', 'Modern Reader', '🌐', 'Modern'),
+    {
+      id: 'decorated-reader',
+      title: 'Decorated Reader',
+      description: 'Finish five award-winning or bestselling guides.',
+      emoji: '🏅',
+      bonusXp: 200,
+      progress: (completed) => ({
+        current: Math.min(completedAmong(completed, awardBookSlugs), 5),
+        target: 5,
+      }),
+    },
+    {
+      id: 'halfway-there',
+      title: 'Halfway There',
+      description: 'Finish half of the entire collection.',
+      emoji: '⛰️',
+      bonusXp: 250,
+      progress: (completed) => ({
+        current: Math.min(completed.size, Math.ceil(total / 2)),
+        target: Math.ceil(total / 2),
+      }),
+    },
+    {
+      id: 'completionist',
+      title: 'Canon Completionist',
+      description: 'Finish every single reading guide. The ultimate flex.',
+      emoji: '🏆',
+      bonusXp: 1000,
+      progress: (completed) => ({ current: completed.size, target: total }),
+    },
+  ];
+}
 
 export function isEarned(badge: Badge, completed: Set<string>): boolean {
   const { current, target } = badge.progress(completed);
   return target > 0 && current >= target;
 }
 
-export function earnedBadges(completed: Set<string>): Badge[] {
+export function earnedBadges(badges: Badge[], completed: Set<string>): Badge[] {
   return badges.filter((b) => isEarned(b, completed));
 }

@@ -101,3 +101,37 @@ export interface Book {
   /** Expanded, in-depth guide (optional; rolled out progressively). */
   deepDive?: BookDeepDive;
 }
+
+/**
+ * The lightweight subset of a Book needed to render a browse card and run the
+ * client-side filters. The home page passes only this shape into the client
+ * browse grid so the long guide prose (summary, analysis, deep dives) is never
+ * serialized into the home page payload.
+ */
+/**
+ * Lightweight, serializable facts about a book: enough to evaluate badge
+ * progress without pulling any guide prose along. The server derives these and
+ * passes them to client code, which must never import the full book data.
+ */
+export interface BookFacet {
+  slug: string;
+  genres: string[];
+  era: string;
+  hasAwards: boolean;
+}
+
+export type BookCardData = Pick<
+  Book,
+  | 'slug'
+  | 'title'
+  | 'author'
+  | 'year'
+  | 'era'
+  | 'region'
+  | 'genres'
+  | 'themes'
+  | 'accent'
+  | 'emoji'
+  | 'hook'
+  | 'awards'
+>;

@@ -1,4 +1,4 @@
-import type { Book } from './types';
+import type { Book, BookFacet } from './types';
 import { classics1 } from './books/classics-1';
 import { classics2 } from './books/classics-2';
 import { classics3 } from './books/classics-3';
@@ -17,7 +17,7 @@ import { deepDives6 } from './deepdives-6';
 import { deepDives7 } from './deepdives-7';
 import { deepDives8 } from './deepdives-8';
 
-export type { Book, GuideSection, Quote, Highlight } from './types';
+export type { Book, BookCardData, BookFacet, GuideSection, Quote, Highlight } from './types';
 
 // Deep-dive guides are authored in batches; merge them into one lookup keyed by slug.
 const allDeepDives: Record<string, BookDeepDive> = {
@@ -65,3 +65,15 @@ export function getBook(slug: string): Book | undefined {
 }
 
 export const bookCount = books.length;
+
+/**
+ * Light per-book facts for client code (badge progress). Deriving these here
+ * keeps one source of truth, while letting client components receive them as
+ * props instead of importing the whole prose-laden book module.
+ */
+export const bookFacets: BookFacet[] = books.map((b) => ({
+  slug: b.slug,
+  genres: b.genres,
+  era: b.era,
+  hasAwards: Boolean(b.awards && b.awards.length > 0),
+}));

@@ -9,8 +9,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { bookCount } from '@/data/books';
-import { badges, earnedBadges, type Badge } from '@/data/badges';
+import type { BookFacet } from '@/data/types';
+import { buildBadges, earnedBadges, type Badge } from '@/data/badges';
 
 const STORAGE_KEY = 'sparky-notes:progress:v1';
 const XP_PER_BOOK = 100;
@@ -56,12 +56,6 @@ interface ProgressState {
   earned: Badge[];
 }
 
-function computeXp(completed: Set<string>): number {
-  const bookXp = completed.size * XP_PER_BOOK;
-  const bonusXp = earnedBadges(completed).reduce((sum, b) => sum + b.bonusXp, 0);
-  return bookXp + bonusXp;
-}
-
 function levelFromXp(xp: number) {
   const level = Math.floor(xp / XP_PER_LEVEL) + 1;
   const xpIntoLevel = xp % XP_PER_LEVEL;
@@ -71,9 +65,27 @@ function levelFromXp(xp: number) {
 
 const ProgressContext = createContext<ProgressState | null>(null);
 
-export function ProgressProvider({ children }: { children: ReactNode }) {
+export function ProgressProvider({
+  children,
+  facets,
+  bookCount,
+}: {
+  children: ReactNode;
+  /** Light book facts from the server; never the full prose-laden book data. */
+  facets: BookFacet[];
+  bookCount: number;
+}) {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [hydrated, setHydrated] = useState(false);
+
+  const badges = useMemo(() => buildBadges(facets, bookCount), [facets, bookCount]);
+
+  const computeXp = useCallback(
+    (done: Set<string>) =>
+      done.size * XP_PER_BOOK +
+      earnedBadges(badges, done).reduce((sum, b) => sum + b.bonusXp, 0),
+    [badges],
+  );
 
   // Read persisted progress once, on the client only.
   useEffect(() => {
@@ -107,7 +119,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const toggleComplete = useCallback(
     (slug: string): ToggleResult => {
       const before = completed;
-      const beforeBadges = new Set(earnedBadges(before).map((b) => b.id));
+      const beforeBadges = new Set(earnedBadges(badges, before).map((b) => b.id));
       const beforeXp = computeXp(before);
 
       const next = new Set(before);
@@ -116,14 +128,14 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       else next.delete(slug);
 
       const afterXp = computeXp(next);
-      const newBadges = earnedBadges(next).filter((b) => !beforeBadges.has(b.id));
+      const newBadges = earnedBadges(badges, next).filter((b) => !beforeBadges.has(b.id));
 
       setCompleted(next);
       persist(next);
 
       return { completed: nowCompleted, xpDelta: afterXp - beforeXp, newBadges };
     },
-    [completed, persist],
+    [completed, persist, badges, computeXp],
   );
 
   const resetProgress = useCallback(() => {
@@ -149,9 +161,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       completedCount: completed.size,
       totalCount: bookCount,
       badges,
-      earned: earnedBadges(completed),
+      earned: earnedBadges(badges, completed),
     };
-  }, [completed, hydrated, isComplete, toggleComplete, resetProgress]);
+  }, [completed, hydrated, isComplete, toggleComplete, resetProgress, badges, bookCount, computeXp]);
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }

@@ -3,8 +3,8 @@
 import Pill from './Pill';
 import {
   countActive,
-  facetOptions,
   type ActiveFilters,
+  type FacetOption,
   type FilterGroup,
 } from '@/lib/filters';
 
@@ -12,6 +12,8 @@ interface FilterPillsProps {
   active: ActiveFilters;
   onToggle: (group: FilterGroup, value: string) => void;
   onClear: () => void;
+  /** Facet options (value, one-word label, count), derived from the book list. */
+  options: Record<'theme' | 'genre' | 'award', FacetOption[]>;
 }
 
 // Three facet groups, each precomputed with one-word labels + book counts.
@@ -21,14 +23,8 @@ const GROUPS: { key: 'theme' | 'genre' | 'award'; label: string }[] = [
   { key: 'award', label: 'Awards' },
 ];
 
-const OPTIONS = {
-  theme: facetOptions('theme'),
-  genre: facetOptions('genre'),
-  award: facetOptions('award'),
-};
-
 /** The filter bar: grouped, space-filling grids of one-word pills with counts. */
-export default function FilterPills({ active, onToggle, onClear }: FilterPillsProps) {
+export default function FilterPills({ active, onToggle, onClear, options }: FilterPillsProps) {
   const activeCount = countActive(active);
 
   return (
@@ -39,7 +35,7 @@ export default function FilterPills({ active, onToggle, onClear }: FilterPillsPr
             {group.label}
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
-            {OPTIONS[group.key].map((opt) => (
+            {options[group.key].map((opt) => (
               <Pill
                 key={opt.value}
                 block
