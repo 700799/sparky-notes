@@ -369,7 +369,7 @@ export const awardWinners: Book[] = [
           'Effia is married to the British governor and lives in the upper rooms of the Cape Coast Castle; Esi is held in the dungeon directly beneath her and shipped to America. They are separated by a stone floor and never learn the other exists. Everything in the novel follows from that accident.',
       },
       {
-        title: 'Eight generations',
+        title: 'Seven generations',
         detail:
           'Each chapter belongs to a single descendant and alternates between the African and American lines, carrying the story across three hundred years and two continents. A life is introduced, made vivid, and then left unfinished as the book moves on. Those interruptions are the design rather than a flaw.',
       },
